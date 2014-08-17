@@ -7,3 +7,6 @@ Plugin automatically detects line encoding and converts it to unicode (QString).
 However 100% match can not be guaranteed
 
 Charset detection provided by [third-party library](https://github.com/batterseapower/libcharsetdetect).
+
+##Distribution
+Prebuilt binaries (win) can be found [here](https://sourceforge.net/projects/qtc-paneencode/files/bin)
