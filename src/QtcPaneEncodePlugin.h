@@ -46,6 +46,9 @@ namespace QtcPaneEncode {
         void newMessage(ProjectExplorer::RunControl *rc, const QString &out, Utils::OutputFormat format);
 
       private:
+        void initLanguage();
+
+      private:
         //! Encoding for build output. Empty if not enabled.
         QByteArray buildEncoding_;
         //! Encoding for application output. Empty if not enabled.

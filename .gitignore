@@ -38,3 +38,4 @@ Icon
 qtc-paneencode.pro.user
 third-party/charsetdetect*
 util/*.zip
+*.qm

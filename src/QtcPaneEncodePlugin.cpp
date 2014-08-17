@@ -1,4 +1,5 @@
 #include <QSettings>
+#include <QTranslator>
 
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/project.h>
@@ -49,6 +50,7 @@ bool QtcPaneEncodePlugin::initialize(const QStringList &arguments, QString *erro
   Q_UNUSED(arguments)
   Q_UNUSED(errorString)
 
+  initLanguage();
   updateSettings();
 
   OptionsPage *optionsPage = new OptionsPage;
@@ -56,6 +58,22 @@ bool QtcPaneEncodePlugin::initialize(const QStringList &arguments, QString *erro
   addAutoReleasedObject(optionsPage);
 
   return true;
+}
+
+void QtcPaneEncodePlugin::initLanguage() {
+  const QString& language = Core::ICore::userInterfaceLanguage();
+  if (!language.isEmpty()) {
+    QStringList paths;
+    paths << ICore::resourcePath () << ICore::userResourcePath();
+    const QString& trFile = QLatin1String ("QtcPaneEncode_") + language;
+    QTranslator* translator = new QTranslator (this);
+    foreach (const QString& path, paths) {
+      if (translator->load (trFile, path + QLatin1String ("/translations"))) {
+        qApp->installTranslator (translator);
+        break;
+      }
+    }
+  }
 }
 
 void QtcPaneEncodePlugin::updateSettings() {

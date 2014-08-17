@@ -21,6 +21,9 @@ HEADERS += \
 FORMS += \
     src/OptionsWidget.ui
 
+TRANSLATIONS += \
+    translation/QtcPaneEncode_ru.ts
+
 OTHER_FILES += \
     LICENSE.md \
     README.md
