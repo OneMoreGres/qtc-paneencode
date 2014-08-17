@@ -24,6 +24,9 @@ namespace QtcPaneEncode {
         void extensionsInitialized();
         ShutdownFlag aboutToShutdown();
 
+      private slots:
+        void updateSettings();
+
         // Compiler output
       private slots:
         //! Set self as proxy for build messages.
@@ -41,6 +44,12 @@ namespace QtcPaneEncode {
         void appendMessage(ProjectExplorer::RunControl *rc, const QString &out, Utils::OutputFormat format);
       signals:
         void newMessage(ProjectExplorer::RunControl *rc, const QString &out, Utils::OutputFormat format);
+
+      private:
+        //! Encoding for build output. Empty if not enabled.
+        QByteArray buildEncoding_;
+        //! Encoding for application output. Empty if not enabled.
+        QByteArray appEncoding_;
     };
 
   } // namespace Internal

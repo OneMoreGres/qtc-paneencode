@@ -5,8 +5,15 @@
 
 namespace QtcPaneEncode {
   namespace Internal {
-    //! Change encoding of source string if needed.
-    QString reencode(const QString &source);
+    //!
+    /*!
+     * \brief Change encoding of source string if needed.
+     * \param source [in] Text to change encoding.
+     * \param codec [in] Codec of resulting text. If NULL then it
+     * will be detected automatically.
+     * \return Reencoded string.
+     */
+    QString reencode(const QString &source, const QTextCodec *codec = NULL);
 
   } // namespace Internal
 } // namespace QtcPaneEncode

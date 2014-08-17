@@ -47,7 +47,10 @@ namespace {
   const int minLength = 3; // To avoid of too short strings detection
 }
 
-QString QtcPaneEncode::Internal::reencode(const QString &source) {
+QString QtcPaneEncode::Internal::reencode(const QString &source, const QTextCodec *codec) {
+  if (codec != NULL) {
+    return codec->toUnicode (source.toLocal8Bit ());
+  }
   // Detectors use only part of string to detect encoding.
   // So function splits source string into some parts.
   QString detectBuffer;

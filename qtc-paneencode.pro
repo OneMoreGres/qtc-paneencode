@@ -6,13 +6,20 @@ include(paths.pri)
 
 SOURCES += \
     src/QtcPaneEncodePlugin.cpp \
-    src/Utils.cpp
+    src/Utils.cpp \
+    src/OptionsWidget.cpp \
+    src/OptionsPage.cpp
 
 HEADERS += \
     src/Constants.h \
     src/PluginGlobal.h \
     src/QtcPaneEncodePlugin.h \
-    src/Utils.h
+    src/Utils.h \
+    src/OptionsWidget.h \
+    src/OptionsPage.h
+
+FORMS += \
+    src/OptionsWidget.ui
 
 OTHER_FILES += \
     LICENSE.md \

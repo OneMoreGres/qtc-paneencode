@@ -1,3 +1,5 @@
+#include <QSettings>
+
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
@@ -6,12 +8,15 @@
 #include <projectexplorer/buildsteplist.h>
 #include <extensionsystem/pluginmanager.h>
 #include <projectexplorer/buildmanager.h>
+#include <coreplugin/icore.h>
 
 #include "QtcPaneEncodePlugin.h"
+#include "OptionsPage.h"
 #include "Utils.h"
 #include "Constants.h"
 
 using namespace QtcPaneEncode::Internal;
+using namespace QtcPaneEncode::Constants;
 
 using namespace Core;
 using namespace ProjectExplorer;
@@ -23,7 +28,7 @@ namespace {
 }
 
 QtcPaneEncodePlugin::QtcPaneEncodePlugin():
-  IPlugin ()
+  IPlugin()
 {
   // Create your members
 }
@@ -43,7 +48,36 @@ bool QtcPaneEncodePlugin::initialize(const QStringList &arguments, QString *erro
 
   Q_UNUSED(arguments)
   Q_UNUSED(errorString)
+
+  updateSettings();
+
+  OptionsPage *optionsPage = new OptionsPage;
+  connect(optionsPage, SIGNAL(settingsChanged()), SLOT(updateSettings()));
+  addAutoReleasedObject(optionsPage);
+
   return true;
+}
+
+void QtcPaneEncodePlugin::updateSettings() {
+  Q_ASSERT(Core::ICore::settings() != NULL);
+  QSettings& settings = *(Core::ICore::settings());
+  settings.beginGroup(SETTINGS_GROUP);
+
+  if(settings.value(SETTINGS_BUILD_ENABLED, false).toBool()) {
+    buildEncoding_ = settings.value(SETTINGS_BUILD_ENCODING, AUTO_ENCODING).toByteArray();
+  }
+  else {
+    buildEncoding_.clear();
+  }
+
+  if(settings.value(SETTINGS_APP_ENABLED, false).toBool()) {
+    appEncoding_ = settings.value(SETTINGS_APP_ENCODING, AUTO_ENCODING).toByteArray();
+  }
+  else {
+    appEncoding_.clear();
+  }
+
+  settings.endGroup();
 }
 
 void QtcPaneEncodePlugin::extensionsInitialized() {
@@ -53,94 +87,109 @@ void QtcPaneEncodePlugin::extensionsInitialized() {
 
 
   // Compiler output
-  connect(BuildManager::instance (), SIGNAL(buildStateChanged(ProjectExplorer::Project*)),
+  connect(BuildManager::instance(), SIGNAL(buildStateChanged(ProjectExplorer::Project*)),
           this, SLOT(handleBuild(ProjectExplorer::Project*)));
   connect(this, SIGNAL(newOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
-          BuildManager::instance (), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
+          BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
   connect(this, SIGNAL(newTask(ProjectExplorer::Task)),
-          BuildManager::instance (), SLOT(addToTaskWindow(ProjectExplorer::Task)));
+          BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task)));
 
   // Run control output
   QObject *appOutputPane = PluginManager::getObjectByClassName(appOutputPaneClassName);
-  if (appOutputPane != NULL) {
-    connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlStarted(ProjectExplorer::RunControl *)),
-             this, SLOT (handleRunStart (ProjectExplorer::RunControl *)));
+  if(appOutputPane != NULL) {
+    connect(ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl *)),
+             this, SLOT(handleRunStart(ProjectExplorer::RunControl *)));
     connect(this, SIGNAL(newMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)),
             appOutputPane, SLOT(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)));
   }
   else {
-    qCritical () << "Failed to find appOutputPane";
+    qCritical() << "Failed to find appOutputPane";
   }
 }
 
 ExtensionSystem::IPlugin::ShutdownFlag QtcPaneEncodePlugin::aboutToShutdown() {
   // Save settings
   // Disconnect from signals that are not needed during shutdown
-  // Hide UI (if you add UI that is not in the main window directly)
-  this->disconnect ();
+  // Hide UI(if you add UI that is not in the main window directly)
+  this->disconnect();
   return SynchronousShutdown;
 }
 
 void QtcPaneEncodePlugin::handleBuild(ProjectExplorer::Project *project) {
-  if (!BuildManager::isBuilding ()) {
+  if(!BuildManager::isBuilding()) {
     return;
   }
-  Target* target = project->activeTarget ();
-  if (target == NULL) {
+  Target *target = project->activeTarget();
+  if(target == NULL) {
     return;
   }
-  BuildConfiguration* buildCOnfiguration = target->activeBuildConfiguration ();
-  if (buildCOnfiguration == NULL) {
+  BuildConfiguration* buildCOnfiguration = target->activeBuildConfiguration();
+  if(buildCOnfiguration == NULL) {
     return;
   }
-  QList<Core::Id> stepsIds = buildCOnfiguration->knownStepLists ();
-  foreach (const Core::Id& id, stepsIds) {
-    BuildStepList* steps = buildCOnfiguration->stepList (id);
-    if (steps == NULL) {
+  QList<Core::Id> stepsIds = buildCOnfiguration->knownStepLists();
+  foreach(const Core::Id &id, stepsIds) {
+    BuildStepList *steps = buildCOnfiguration->stepList(id);
+    if(steps == NULL) {
       continue;
     }
-    for(int i = 0, end = steps->count (); i < end; ++i) {
-      BuildStep *step = steps->at (i);
+    for(int i = 0, end = steps->count(); i < end; ++i) {
+      BuildStep *step = steps->at(i);
       connect(step, SIGNAL(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
               this, SLOT(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
               Qt::UniqueConnection);
       disconnect(step, SIGNAL(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
-                 BuildManager::instance (), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
+                 BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
 
       connect(step, SIGNAL(addTask(ProjectExplorer::Task)),
               this, SLOT(addTask(ProjectExplorer::Task)),
               Qt::UniqueConnection);
       disconnect(step, SIGNAL(addTask(ProjectExplorer::Task)),
-                 BuildManager::instance (), SLOT(addToTaskWindow(ProjectExplorer::Task)));
+                 BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task)));
     }
   }
 }
 
 void QtcPaneEncodePlugin::addTask(const Task &task) {
+  if (buildEncoding_.isEmpty ()) {
+    emit newTask(task);
+    return;
+  }
   Task convertedTask = task;
-  convertedTask.description = reencode (task.description);
+  // Unknown charset will be handled like auto-detection request
+  convertedTask.description = reencode(task.description,
+                                       QTextCodec::codecForName(buildEncoding_));
   emit newTask(convertedTask);
 }
 
 void QtcPaneEncodePlugin::addOutput(const QString &string, BuildStep::OutputFormat format, BuildStep::OutputNewlineSetting newlineSetting) {
-  QString convertedString = reencode (string);
-  emit newOutput (convertedString, format, newlineSetting);
+  if (buildEncoding_.isEmpty ()) {
+    emit newOutput(string, format, newlineSetting);
+    return;
+  }
+  QString convertedString = reencode(string,
+                                     QTextCodec::codecForName(buildEncoding_));
+  emit newOutput(convertedString, format, newlineSetting);
 }
 
 void QtcPaneEncodePlugin::handleRunStart(RunControl *runControl) {
-  QObject *appOutputPane = PluginManager::getObjectByClassName (appOutputPaneClassName);
-  if (appOutputPane != NULL) {
+  QObject *appOutputPane = PluginManager::getObjectByClassName(appOutputPaneClassName);
+  if(appOutputPane != NULL) {
     connect(runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)),
             this, SLOT(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)),
             Qt::UniqueConnection);
-    disconnect (runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)),
+    disconnect(runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)),
                 appOutputPane, SLOT(appendMessage(ProjectExplorer::RunControl*,QString,Utils::OutputFormat)));
   }
 }
 
 void QtcPaneEncodePlugin::appendMessage(RunControl *rc, const QString &out, Utils::OutputFormat format) {
-  QString convertedOut = reencode (out);
-  emit newMessage (rc, convertedOut, format);
+  if (appEncoding_.isEmpty ()) {
+    emit newMessage(rc, out, format);
+    return;
+  }
+  QString convertedOut = reencode(out, QTextCodec::codecForName(appEncoding_));
+  emit newMessage(rc, convertedOut, format);
 }
 
 Q_EXPORT_PLUGIN2(QtcPaneEncode, QtcPaneEncodePlugin)
