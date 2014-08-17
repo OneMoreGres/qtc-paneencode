@@ -1,0 +1,10 @@
+<plugin name=\"QtcPaneEncode\" version=\"$$QTCREATOR_VERSION\" compatVersion=\"$$QTCREATOR_VERSION\">
+    <vendor>Gres</vendor>
+    <category>Qt Creator</category>
+    <copyright>(C) Gres</copyright>
+    <license>MIT license</license>
+    <description>Changes panes encoding</description>
+    <url>http://gres.biz/qtc-paneencode</url>
+    $$dependencyList
+</plugin>
+
