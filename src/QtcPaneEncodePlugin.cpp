@@ -11,6 +11,8 @@
 #include <projectexplorer/buildmanager.h>
 #include <coreplugin/icore.h>
 
+#include <QtPlugin>
+
 #include "QtcPaneEncodePlugin.h"
 #include "OptionsPage.h"
 #include "Utils.h"
