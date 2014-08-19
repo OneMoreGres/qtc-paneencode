@@ -10,6 +10,21 @@
 using namespace QtcPaneEncode::Internal;
 using namespace QtcPaneEncode::Constants;
 
+#if QT_VERSION < 0x050000
+void setComboCurrent(QComboBox *combo, const QString& text) {
+  for(int i = 0, end = combo->count (); i < end; ++i) {
+    if (combo->itemText(i) == text) {
+      combo->setCurrentIndex (i);
+      return;
+    }
+  }
+}
+#else
+void setComboCurrent(QComboBox *combo, const QString& text) {
+  combo->setCurrentText(text);
+}
+#endif
+
 OptionsWidget::OptionsWidget(QWidget *parent) :
   QWidget(parent),
   ui(new Ui::OptionsWidget)
@@ -40,10 +55,9 @@ void OptionsWidget::load() {
   settings.beginGroup(SETTINGS_GROUP);
 
   ui->buildGroup->setChecked(settings.value(SETTINGS_BUILD_ENABLED, false).toBool());
-  ui->buildEncodeCombo->setCurrentText(settings.value(SETTINGS_BUILD_ENCODING, AUTO_ENCODING).toString());
-
+  setComboCurrent(ui->buildEncodeCombo, settings.value(SETTINGS_BUILD_ENCODING, AUTO_ENCODING).toString());
   ui->appGroup->setChecked(settings.value(SETTINGS_APP_ENABLED, false).toBool());
-  ui->appEncodeCombo->setCurrentText(settings.value(SETTINGS_APP_ENCODING, AUTO_ENCODING).toString());
+  setComboCurrent(ui->appEncodeCombo, settings.value(SETTINGS_APP_ENCODING, AUTO_ENCODING).toString());
 
   settings.endGroup();
 }
