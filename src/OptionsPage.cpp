@@ -8,7 +8,6 @@ using namespace QtcPaneEncode::Constants;
 OptionsPage::OptionsPage(QObject *parent) :
   IOptionsPage(parent)
 {
-  Q_ASSERT(settings_ != NULL);
   setId(OPTIONS_PAGE_ID);
   setDisplayName(tr("Pane encoding"));
   setCategory(OPTIONS_CATEGORY_ID);
@@ -30,7 +29,6 @@ QWidget *OptionsPage::widget() {
 }
 
 QWidget *OptionsPage::createPage(QWidget *parent) {
-  Q_ASSERT(settings_ != NULL);
   widget_ = new OptionsWidget(parent);
   return widget_.data();
 }
