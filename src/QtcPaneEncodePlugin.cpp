@@ -139,17 +139,31 @@ void QtcPaneEncodePlugin::handleBuild(ProjectExplorer::Project *project) {
   if(!BuildManager::isBuilding()) {
     return;
   }
-  Target *target = project->activeTarget();
-  if(target == NULL) {
+  const Target *buildingTarget = NULL;
+  foreach(Target* target, project->targets ()) {
+    if (BuildManager::isBuilding (target)) {
+      buildingTarget = target;
+      break;
+    }
+  }
+  if(buildingTarget == NULL) {
     return;
   }
-  BuildConfiguration* buildConfiguration = target->activeBuildConfiguration();
-  if(buildConfiguration == NULL) {
+
+  BuildConfiguration* buildingConfiguration = NULL;
+  foreach(BuildConfiguration* config, buildingTarget->buildConfigurations ()) {
+    if (BuildManager::isBuilding (config)) {
+      buildingConfiguration = config;
+      break;
+    }
+  }
+  if(buildingConfiguration == NULL) {
     return;
   }
-  QList<Core::Id> stepsIds = buildConfiguration->knownStepLists();
+
+  QList<Core::Id> stepsIds = buildingConfiguration->knownStepLists();
   foreach(const Core::Id &id, stepsIds) {
-    BuildStepList *steps = buildConfiguration->stepList(id);
+    BuildStepList *steps = buildingConfiguration->stepList(id);
     if(steps == NULL) {
       continue;
     }
