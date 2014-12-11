@@ -225,6 +225,3 @@ void QtcPaneEncodePlugin::appendMessage(RunControl *rc, const QString &out, Util
   QString convertedOut = reencode(out, QTextCodec::codecForName(appEncoding_));
   emit newMessage(rc, convertedOut, format);
 }
-
-Q_EXPORT_PLUGIN2(QtcPaneEncode, QtcPaneEncodePlugin)
-

@@ -1,0 +1,13 @@
+{
+    \"Name\" : \"QtcPaneEncode\",
+    \"Version\" : \"$$QTCREATOR_VERSION\",
+    \"CompatVersion\" : \"$$QTCREATOR_COMPAT_VERSION\",
+    \"Experimental\" : true,
+    \"Category\": \"Qt Creator\",
+    \"Vendor\" : \"Gres\",
+    \"Copyright\" : \"(C) Gres\",
+    \"License\" : \"MIT license\",
+    \"Description\" : \"Changes panes encoding\",
+    \"Url\" : \"http://gres.biz/qtc-paneencode\",
+    $$dependencyList
+}
