@@ -111,8 +111,8 @@ void QtcPaneEncodePlugin::extensionsInitialized() {
           this, SLOT(handleBuild(ProjectExplorer::Project*)));
   connect(this, SIGNAL(newOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
           BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
-  connect(this, SIGNAL(newTask(ProjectExplorer::Task)),
-          BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task)));
+  connect(this, SIGNAL(newTask(ProjectExplorer::Task, int, int)),
+          BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task, int, int)));
 
   // Run control output
   QObject *appOutputPane = PluginManager::getObjectByClassName(appOutputPaneClassName);
@@ -175,25 +175,25 @@ void QtcPaneEncodePlugin::handleBuild(ProjectExplorer::Project *project) {
       disconnect(step, SIGNAL(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
                  BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
 
-      connect(step, SIGNAL(addTask(ProjectExplorer::Task)),
-              this, SLOT(addTask(ProjectExplorer::Task)),
+      connect(step, SIGNAL(addTask(ProjectExplorer::Task, int, int)),
+              this, SLOT(addTask(ProjectExplorer::Task, int, int)),
               Qt::UniqueConnection);
-      disconnect(step, SIGNAL(addTask(ProjectExplorer::Task)),
-                 BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task)));
+      disconnect(step, SIGNAL(addTask(ProjectExplorer::Task, int, int)),
+                 BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task, int, int)));
     }
   }
 }
 
-void QtcPaneEncodePlugin::addTask(const Task &task) {
+void QtcPaneEncodePlugin::addTask(const Task &task, int linkedOutputLines, int skipLines) {
   if (buildEncoding_.isEmpty ()) {
-    emit newTask(task);
+    emit newTask(task, linkedOutputLines, skipLines);
     return;
   }
   Task convertedTask = task;
   // Unknown charset will be handled like auto-detection request
   convertedTask.description = reencode(task.description,
                                        QTextCodec::codecForName(buildEncoding_));
-  emit newTask(convertedTask);
+  emit newTask(convertedTask, linkedOutputLines, skipLines);
 }
 
 void QtcPaneEncodePlugin::addOutput(const QString &string, BuildStep::OutputFormat format, BuildStep::OutputNewlineSetting newlineSetting) {

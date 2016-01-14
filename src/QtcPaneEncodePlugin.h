@@ -31,10 +31,10 @@ namespace QtcPaneEncode {
       private slots:
         //! Set self as proxy for build messages.
         void handleBuild(ProjectExplorer::Project *project);
-        void addTask(const ProjectExplorer::Task &task);
+        void addTask(const ProjectExplorer::Task &task, int linkedOutputLines, int skipLines);
         void addOutput(const QString &string, ProjectExplorer::BuildStep::OutputFormat format, ProjectExplorer::BuildStep::OutputNewlineSetting newlineSetting);
       signals:
-        void newTask(const ProjectExplorer::Task &task);
+        void newTask(const ProjectExplorer::Task &task, int linkedOutputLines, int skipLines);
         void newOutput(const QString &string, ProjectExplorer::BuildStep::OutputFormat format, ProjectExplorer::BuildStep::OutputNewlineSetting newlineSetting);
 
         // Run control output
