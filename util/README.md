@@ -1,4 +1,6 @@
 # Changelog
+## v 4.0.0
+QTC version update
 ## v 3.6.0_1
 Tasks pane fix
 ## v 3.6.0
