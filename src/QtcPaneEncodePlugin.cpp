@@ -109,10 +109,10 @@ void QtcPaneEncodePlugin::extensionsInitialized() {
   // Compiler output
   connect(BuildManager::instance(), SIGNAL(buildStateChanged(ProjectExplorer::Project*)),
           this, SLOT(handleBuild(ProjectExplorer::Project*)));
-  connect(this, SIGNAL(newOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
-          BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
-  connect(this, SIGNAL(newTask(ProjectExplorer::Task, int, int)),
-          BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task, int, int)));
+  connect(this, &QtcPaneEncodePlugin::newOutput,
+          BuildManager::instance(), &BuildManager::addToOutputWindow);
+  connect(this, &QtcPaneEncodePlugin::newTask,
+          BuildManager::instance(), &BuildManager::addToTaskWindow);
 
   // Run control output
   QObject *appOutputPane = PluginManager::getObjectByClassName(appOutputPaneClassName);
@@ -169,17 +169,15 @@ void QtcPaneEncodePlugin::handleBuild(ProjectExplorer::Project *project) {
     }
     for(int i = 0, end = steps->count(); i < end; ++i) {
       BuildStep *step = steps->at(i);
+      disconnect(step, &BuildStep::addOutput, 0, 0);
       connect(step, SIGNAL(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
               this, SLOT(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
               Qt::UniqueConnection);
-      disconnect(step, SIGNAL(addOutput(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)),
-                 BuildManager::instance(), SLOT(addToOutputWindow(QString,ProjectExplorer::BuildStep::OutputFormat,ProjectExplorer::BuildStep::OutputNewlineSetting)));
 
+      disconnect(step, &BuildStep::addTask, 0, 0);
       connect(step, SIGNAL(addTask(ProjectExplorer::Task, int, int)),
               this, SLOT(addTask(ProjectExplorer::Task, int, int)),
               Qt::UniqueConnection);
-      disconnect(step, SIGNAL(addTask(ProjectExplorer::Task, int, int)),
-                 BuildManager::instance(), SLOT(addToTaskWindow(ProjectExplorer::Task, int, int)));
     }
   }
 }
