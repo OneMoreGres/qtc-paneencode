@@ -1,4 +1,6 @@
 # Changelog
+## v 4.2.0
+QTC version update
 ## v 4.1.0
 QTC version update
 ## v 4.0.0
