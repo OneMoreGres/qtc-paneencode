@@ -11,7 +11,7 @@ OptionsPage::OptionsPage(QObject *parent) :
   setId(OPTIONS_PAGE_ID);
   setDisplayName(tr("Pane encoding"));
   setCategory(OPTIONS_CATEGORY_ID);
-  setCategoryIcon(QLatin1String(OPTIONS_CATEGORY_ICON));
+  setCategoryIcon(Utils::Icon(OPTIONS_CATEGORY_ICON));
 
   keyWords_ << QLatin1String("encoding") << QLatin1String("build") <<
                QLatin1String("output");
