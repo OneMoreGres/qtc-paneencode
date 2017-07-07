@@ -27,7 +27,8 @@ TRANSLATIONS += \
 OTHER_FILES += \
     LICENSE.md \
     README.md \
-    util/README.md
+    util/README.md \
+    uncrustify.cfg
 
 LIBS += -L$$PWD/third-party/charsetdetect-build/build -lcharsetdetect
 INCLUDEPATH += $$PWD/third-party/charsetdetect

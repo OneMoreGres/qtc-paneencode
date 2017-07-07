@@ -15,18 +15,18 @@ namespace QtcPaneEncode {
      * \brief Options page.
      * Creates edition widget. Emits settingsChanged().
      */
-    class OptionsPage : public Core::IOptionsPage
-    {
-        Q_OBJECT
+    class OptionsPage : public Core::IOptionsPage {
+      Q_OBJECT
+
       public:
-        explicit OptionsPage(QObject *parent = 0);
+        explicit OptionsPage (QObject *parent = 0);
         ~OptionsPage ();
 
-        bool matches(const QString &searchKeyWord) const;
-        QWidget *widget();
-        QWidget *createPage(QWidget *parent);
-        void apply();
-        void finish();
+        bool matches (const QString &searchKeyWord) const;
+        QWidget *widget ();
+        QWidget *createPage (QWidget *parent);
+        void apply ();
+        void finish ();
 
       signals:
         void settingsChanged ();

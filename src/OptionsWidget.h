@@ -10,19 +10,18 @@ namespace Ui {
 namespace QtcPaneEncode {
   namespace Internal {
 
-    class OptionsWidget : public QWidget
-    {
-        Q_OBJECT
+    class OptionsWidget : public QWidget {
+      Q_OBJECT
 
       public:
-        explicit OptionsWidget(QWidget *parent = 0);
-        ~OptionsWidget();
+        explicit OptionsWidget (QWidget *parent = 0);
+        ~OptionsWidget ();
 
-        void load();
-        void apply();
+        void load ();
+        void apply ();
 
       private:
-        void init();
+        void init ();
 
       private:
         Ui::OptionsWidget *ui;

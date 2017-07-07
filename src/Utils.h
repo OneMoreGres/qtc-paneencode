@@ -13,7 +13,7 @@ namespace QtcPaneEncode {
      * will be detected automatically.
      * \return Reencoded string.
      */
-    QString reencode(const QString &source, const QTextCodec *codec = NULL);
+    QString reencode (const QString &source, const QTextCodec *codec = NULL);
 
   } // namespace Internal
 } // namespace QtcPaneEncode
