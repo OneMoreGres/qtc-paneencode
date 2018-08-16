@@ -26,8 +26,7 @@ using namespace ProjectExplorer;
 using namespace ExtensionSystem;
 
 namespace {
-  const QString appOutputPaneClassName =
-    QLatin1String ("ProjectExplorer::Internal::AppOutputPane");
+  const QString appOutputPaneName = QLatin1String ("AppOutputPane");
 }
 
 QtcPaneEncodePlugin::QtcPaneEncodePlugin () :
@@ -54,9 +53,8 @@ bool QtcPaneEncodePlugin::initialize (const QStringList &arguments, QString *err
   initLanguage ();
   updateSettings ();
 
-  OptionsPage *optionsPage = new OptionsPage;
+  OptionsPage *optionsPage = new OptionsPage(this);
   connect (optionsPage, SIGNAL (settingsChanged ()), SLOT (updateSettings ()));
-  addAutoReleasedObject (optionsPage);
 
   return true;
 }
@@ -114,7 +112,7 @@ void QtcPaneEncodePlugin::extensionsInitialized () {
            BuildManager::instance (), &BuildManager::addToTaskWindow);
 
   // Run control output
-  QObject *appOutputPane = PluginManager::getObjectByClassName (appOutputPaneClassName);
+  QObject *appOutputPane = PluginManager::getObjectByName (appOutputPaneName);
   if (appOutputPane != NULL) {
     connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlStarted (ProjectExplorer::RunControl *)),
              this, SLOT (handleRunStart (ProjectExplorer::RunControl *)));
@@ -204,7 +202,7 @@ void QtcPaneEncodePlugin::addOutput (const QString &string, BuildStep::OutputFor
 }
 
 void QtcPaneEncodePlugin::handleRunStart (RunControl *runControl) {
-  QObject *appOutputPane = PluginManager::getObjectByClassName (appOutputPaneClassName);
+  QObject *appOutputPane = PluginManager::getObjectByName(appOutputPaneName);
   if (appOutputPane != NULL) {
     connect (runControl, SIGNAL (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)),
              this, SLOT (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)),
