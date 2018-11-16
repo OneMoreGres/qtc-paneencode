@@ -9,7 +9,7 @@ However 100% match can not be guaranteed
 Charset detection provided by [third-party library](https://github.com/batterseapower/libcharsetdetect).
 
 ## Distribution
-Prebuilt binaries (win) can be found [here](https://sourceforge.net/projects/qtc-paneencode/files/bin)
+Prebuilt binaries (win) can be found in [github releases](https://github.com/OneMoreGres/qtc-paneencode/releases)
 
 ## Installation
 IMPORTANT: plugin's version must match Qt Creator's version (difference in last digit is acceptable)
