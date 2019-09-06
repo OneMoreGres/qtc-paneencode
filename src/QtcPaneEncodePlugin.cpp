@@ -3,6 +3,7 @@
 
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/project.h>
+#include <projectexplorer/runcontrol.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/task.h>
 #include <projectexplorer/buildconfiguration.h>
@@ -203,16 +204,19 @@ void QtcPaneEncodePlugin::addOutput (const QString &string, BuildStep::OutputFor
 
 void QtcPaneEncodePlugin::handleRunStart (RunControl *runControl) {
   QObject *appOutputPane = PluginManager::getObjectByName(appOutputPaneName);
-  if (appOutputPane != NULL) {
-    connect (runControl, SIGNAL (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)),
-             this, SLOT (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)),
+  if (appOutputPane) {
+    connect (runControl, SIGNAL (appendMessage (const QString &, Utils::OutputFormat)),
+             this, SLOT (appendMessage (const QString &,Utils::OutputFormat)),
              Qt::UniqueConnection);
-    disconnect (runControl, SIGNAL (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)),
-                appOutputPane, SLOT (appendMessage (ProjectExplorer::RunControl *,QString,Utils::OutputFormat)));
+    disconnect (runControl, SIGNAL (appendMessage (const QString &,Utils::OutputFormat)),
+                appOutputPane, SLOT (appendMessage (const QString &,Utils::OutputFormat)));
   }
 }
 
-void QtcPaneEncodePlugin::appendMessage (RunControl *rc, const QString &out, Utils::OutputFormat format) {
+void QtcPaneEncodePlugin::appendMessage (const QString &out, Utils::OutputFormat format) {
+  auto rc = qobject_cast<RunControl*>(sender());
+  if (!rc)
+    return;
   if (appEncoding_.isEmpty ()) {
     emit newMessage (rc, out, format);
     return;

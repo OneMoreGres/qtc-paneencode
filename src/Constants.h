@@ -6,7 +6,6 @@
 namespace QtcPaneEncode {
   namespace Constants {
     const char OPTIONS_PAGE_ID[] = "QtcPaneEncode.OptionsPage";
-    const char OPTIONS_CATEGORY_ID[] = "K.ProjectExplorer"; // same as ProjectExplorer::Constants::PROJECTEXPLORER_SETTINGS_CATEGORY;
     const char OPTIONS_CATEGORY_ICON[] = ":/core/images/category_buildrun.png"; // same as ProjectExplorer::Constants::PROJECTEXPLORER_SETTINGS_CATEGORY_ICON;
 
     const QString SETTINGS_GROUP = QLatin1String ("QtcPaneEncode");

@@ -1,6 +1,7 @@
 #include "OptionsPage.h"
 #include "OptionsWidget.h"
 #include "Constants.h"
+#include <projectexplorer/projectexplorerconstants.h>
 
 using namespace QtcPaneEncode::Internal;
 using namespace QtcPaneEncode::Constants;
@@ -9,7 +10,7 @@ OptionsPage::OptionsPage (QObject *parent) :
   IOptionsPage (parent) {
   setId (OPTIONS_PAGE_ID);
   setDisplayName (tr ("Pane encoding"));
-  setCategory (OPTIONS_CATEGORY_ID);
+  setCategory (ProjectExplorer::Constants::BUILD_AND_RUN_SETTINGS_CATEGORY);
   setCategoryIcon (Utils::Icon (OPTIONS_CATEGORY_ICON));
 
   keyWords_ << QLatin1String ("encoding") << QLatin1String ("build") <<

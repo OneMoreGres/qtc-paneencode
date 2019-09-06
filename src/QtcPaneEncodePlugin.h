@@ -43,7 +43,7 @@ namespace QtcPaneEncode {
       private slots:
         //! Set self as proxy for application messages.
         void handleRunStart (ProjectExplorer::RunControl *runControl);
-        void appendMessage (ProjectExplorer::RunControl *rc, const QString &out, Utils::OutputFormat format);
+        void appendMessage (const QString &out, Utils::OutputFormat format);
 
       signals:
         void newMessage (ProjectExplorer::RunControl *rc, const QString &out, Utils::OutputFormat format);
