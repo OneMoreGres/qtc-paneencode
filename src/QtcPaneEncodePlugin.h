@@ -7,6 +7,7 @@
 
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/buildstep.h>
+#include <projectexplorer/runcontrol.h>
 
 namespace QtcPaneEncode {
   namespace Internal {
