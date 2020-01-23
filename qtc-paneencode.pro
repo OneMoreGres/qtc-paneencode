@@ -30,7 +30,10 @@ OTHER_FILES += \
     util/README.md \
     uncrustify.cfg
 
-LIBS += -L$$PWD/third-party/charsetdetect-build/build -lcharsetdetect
+LIBS += -L$$PWD/third-party/charsetdetect-build/build \
+        -L$$PWD/third-party/charsetdetect-build/build/Debug \
+        -L$$PWD/third-party/charsetdetect-build/build/Release \
+        -lcharsetdetect
 INCLUDEPATH += $$PWD/third-party/charsetdetect
 
 PROVIDER = Gres

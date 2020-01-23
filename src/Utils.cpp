@@ -31,7 +31,7 @@ QTextCodec *detectCodec (const QByteArray &source) {
 #  include "charsetdetect.h"
 QTextCodec *detectCodec (const QByteArray &source) {
   csd_t detector = csd_open ();
-  if (detector <= 0) {
+  if (detector == (csd_t)-1) {
     qCritical () << "codec detector open failed";
     return NULL;
   }

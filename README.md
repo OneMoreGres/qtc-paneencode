@@ -1,5 +1,7 @@
 # Qt Creator panes encoding change
 
+![build status](https://github.com/OneMoreGres/qtc-paneencode/workflows/Plugin%20build/badge.svg)
+
 ## Introduction
 Allows to change encoding of application and compiler ouput panes.
 Useful in cases when application generates output not in local encoding and it cannot be changed.
