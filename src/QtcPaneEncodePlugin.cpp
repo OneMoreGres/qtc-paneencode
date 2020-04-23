@@ -159,9 +159,9 @@ void QtcPaneEncodePlugin::handleBuild (ProjectExplorer::Project *project) {
     return;
   }
 
-  QList<Core::Id> stepsIds = buildingConfiguration->knownStepLists ();
-  foreach (const Core::Id & id, stepsIds) {
-    BuildStepList *steps = buildingConfiguration->stepList (id);
+  QVector<BuildStepList*> lists{buildingConfiguration->buildSteps (),
+        buildingConfiguration->cleanSteps ()};
+  for (const auto steps: lists) {
     if (steps == NULL) {
       continue;
     }
