@@ -187,8 +187,13 @@ void QtcPaneEncodePlugin::addTask (const Task &task, int linkedOutputLines, int 
   }
   Task convertedTask = task;
   // Unknown charset will be handled like auto-detection request
-  convertedTask.description = reencode (task.description,
-                                        QTextCodec::codecForName (buildEncoding_));
+  const auto newDescription = reencode (task.description(),
+                                       QTextCodec::codecForName (buildEncoding_));
+  QStringList desc = newDescription.split('\n');
+  if (desc.length() > 1) {
+      convertedTask.summary = desc.first();
+      convertedTask.details = desc.mid(1);
+  }
   emit newTask (convertedTask, linkedOutputLines, skipLines);
 }
 
