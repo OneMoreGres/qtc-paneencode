@@ -64,7 +64,8 @@ void QtcPaneEncodePlugin::initLanguage () {
   const QString &language = Core::ICore::userInterfaceLanguage ();
   if (!language.isEmpty ()) {
     QStringList paths;
-    paths << ICore::resourcePath () << ICore::userResourcePath ();
+    paths << ICore::resourcePath ().toString ()
+          << ICore::userResourcePath ().toString ();
     const QString &trFile = QLatin1String ("QtcPaneEncode_") + language;
     QTranslator *translator = new QTranslator (this);
     foreach (const QString &path, paths) {
